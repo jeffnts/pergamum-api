@@ -16,15 +16,49 @@ enum Role {
   USER
 }
 
+model Status {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  name        String @unique
+  description String
+  User        User[]
+
+  @@map("status")
+}
+
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId
   email          String    @unique
   name           String
   role           Role      @default(USER)
+  status         Status    @relation(fields: [statusId], references: [id])
   firebaseUserId String    @unique
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @default(now())
   deletedAt      DateTime?
+  statusId       String    @db.ObjectId
 
   @@map("users")
+}
+
+model Book {
+  id               String             @id @default(auto()) @map("_id") @db.ObjectId
+  title            String             @unique
+  description      String
+  resume           String?
+  author           String
+  date             DateTime?
+  imageUrl         String?
+  amount           Int                @default(1)
+  bookAvailability BookAvailability[]
+
+  @@map("books")
+}
+
+model BookAvailability {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  book   Book   @relation(fields: [bookId], references: [id])
+  amount Int
+  bookId String @unique @db.ObjectId
+
+  @@map("book_availability")
 }

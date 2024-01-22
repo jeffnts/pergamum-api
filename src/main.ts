@@ -1,9 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
+import { StatusService } from 'modules/status/status.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const statusService = app.get(StatusService);
+  await statusService.populateStatus();
+
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   await app.listen(process.env.PORT || 5000);

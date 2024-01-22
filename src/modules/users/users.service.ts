@@ -7,6 +7,7 @@ import { FirebaseError } from 'firebase/app';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { CreateUserDto } from './dto/create-user.dto';
 import { PrismaService, firebaseApp } from 'libs';
+import { INACTIVE } from 'constants/status';
 
 @Injectable()
 export class UsersService {
@@ -27,6 +28,7 @@ export class UsersService {
           email,
           name,
           firebaseUserId: user?.uid,
+          statusId: INACTIVE,
         },
       });
 
@@ -49,7 +51,46 @@ export class UsersService {
         name: true,
         email: true,
         role: true,
+        status: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
+  }
+
+  async findAll() {
+    return this.prisma.user.findMany({
+      where: {
+        role: {
+          not: 'ADMIN',
+        },
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        status: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }
+
+  async updateStatus(userId: string, statusId: string) {
+    await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        statusId,
+      },
+    });
+
+    return 'Status atualizado com sucesso!';
   }
 }

@@ -1,39 +1,36 @@
 import { IsNotEmpty } from 'class-validator';
 import { REQUIRED_FIELD } from 'constants/validation';
 
-type Role = 'ADMIN' | 'USER';
+export class CreateBookDto {
+  @IsNotEmpty({
+    message: JSON.stringify({
+      type: REQUIRED_FIELD,
+      field: 'title',
+    }),
+  })
+  title: string;
 
-type Status = {
-  name: string;
+  @IsNotEmpty({
+    message: JSON.stringify({
+      type: REQUIRED_FIELD,
+      field: 'description',
+    }),
+  })
   description: string;
-};
-
-export class CreateUserDto {
-  @IsNotEmpty({
-    message: JSON.stringify({
-      type: REQUIRED_FIELD,
-      field: 'name',
-    }),
-  })
-  name: string;
 
   @IsNotEmpty({
     message: JSON.stringify({
       type: REQUIRED_FIELD,
-      field: 'email',
+      field: 'author',
     }),
   })
-  email: string;
+  author: string;
 
-  @IsNotEmpty({
-    message: JSON.stringify({
-      type: REQUIRED_FIELD,
-      field: 'password',
-    }),
-  })
-  password: string;
+  resume: string;
 
-  role: Role;
+  amount: number;
 
-  status: Status;
+  date: Date;
+
+  image: File;
 }
